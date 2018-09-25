@@ -5,6 +5,7 @@ module Lib
   ) where
 
 import GHC.Generics
+import Data.Function ((&))
 import Data.ByteString.Lazy.Char8 (pack, unpack)
 import Data.Aeson
 import Network.HTTP.Server
@@ -30,17 +31,32 @@ routeStampDutyRequest request =
                      }
     otherwise -> badRequest "Bad request. Try the following: ..." -- TODO
 
-calculateStampDuty :: Int -> Int
+calculateStampDuty :: Double -> Double
 calculateStampDuty p =
-  p + 1 -- TODO
+  sum [ toPairs rateBounds
+          & map (\((l, r), (u, _)) -> r * min (max 0.0 (p - l)) (u - l))
+          & sum
+      , last rateBounds & \(l, r) -> r * (max 0.0 (p - l))
+      ]
+
+rateBounds =
+  [ (       0.0, 0.0  )
+  , (  125000.0, 0.02 )
+  , (  250000.0, 0.05 )
+  , (  925000.0, 0.1  )
+  , ( 1500000.0, 0.12 )
+  ]
+
+toPairs :: [a] -> [(a, a)]
+toPairs l = (zip <*> tail) l
 
 data SdltQuery = SdltQuery
-  { propertyValue :: Int
+  { propertyValue :: Double
   } deriving (Generic, FromJSON)
 
 data SdltResponse = SdltResponse
-  { givenPropertyValue :: Int
-  , stampDutyAmount :: Int
+  { givenPropertyValue :: Double
+  , stampDutyAmount :: Double
   } deriving (Generic, ToJSON)
 
 headers message contentType =
