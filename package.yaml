@@ -24,6 +24,8 @@ dependencies:
 - http-server
 - url
 - network
+- aeson
+- bytestring
 
 library:
   source-dirs: src
