@@ -11,6 +11,7 @@ import Data.Aeson
 import Network.HTTP.Server
 import Network.URL
 import Network.Socket.Internal (SockAddr)
+import Lib.Types
 
 serveStampDutyCalculator :: IO ()
 serveStampDutyCalculator = do server handle
@@ -31,13 +32,15 @@ routeStampDutyRequest request =
                      }
     otherwise -> badRequest "Bad request. Try the following: ..." -- TODO
 
-calculateStampDuty :: Double -> Double
-calculateStampDuty p =
+calculateStampDuty :: HousePrice -> TaxAmount
+calculateStampDuty housePrice =
   sum [ toPairs rateBounds
           & map (\((l, r), (u, _)) -> r * min (max 0.0 (p - l)) (u - l))
           & sum
       , last rateBounds & \(l, r) -> r * (max 0.0 (p - l))
       ]
+    & TaxAmount
+  where p = fromHousePrice housePrice
 
 rateBounds =
   [ (       0.0, 0.0  )
@@ -51,12 +54,12 @@ toPairs :: [a] -> [(a, a)]
 toPairs l = (zip <*> tail) l
 
 data SdltQuery = SdltQuery
-  { propertyValue :: Double
+  { propertyValue :: HousePrice
   } deriving (Generic, FromJSON)
 
 data SdltResponse = SdltResponse
-  { givenPropertyValue :: Double
-  , stampDutyAmount :: Double
+  { givenPropertyValue :: HousePrice
+  , stampDutyAmount :: TaxAmount
   } deriving (Generic, ToJSON)
 
 headers message contentType =
