@@ -24,13 +24,13 @@ handle _ url request =
 
 routeStampDutyRequest :: Request String -> Response String
 routeStampDutyRequest request =
-  case decode . pack $ rqBody request of
-    Just SdltQuery { propertyValue = p } ->
+  case eitherDecode . pack $ rqBody request of
+    Right SdltQuery { propertyValue = p } ->
       responseWith "application/json" . unpack . encode $
         SdltResponse { givenPropertyValue = p
                      , stampDutyAmount = calculateStampDuty p
                      }
-    otherwise -> badRequest "Bad request. Try the following: ..." -- TODO
+    Left err -> badRequest err
 
 calculateStampDuty :: HousePrice -> TaxAmount
 calculateStampDuty housePrice =
