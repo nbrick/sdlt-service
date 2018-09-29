@@ -26,6 +26,9 @@ dependencies:
 - network
 - aeson
 - bytestring
+- hspec
+- either-unwrap
+- QuickCheck
 
 library:
   source-dirs: src

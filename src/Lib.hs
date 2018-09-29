@@ -2,6 +2,7 @@
 
 module Lib
   ( serveStampDutyCalculator
+  , calculateStampDuty
   ) where
 
 import GHC.Generics
