@@ -2,12 +2,12 @@ import Test.Hspec
 import Test.QuickCheck
 import Data.Either.Unwrap
 import Data.Function ((&))
-import Lib (calculateStampDuty)
-import Lib.Types
+import PropertyTax (calculateStampDuty)
+import PropertyTax.Types
 
 main :: IO ()
 main = hspec $ do
-  describe "Lib.calculateStampDuty" $ do
+  describe "PropertyTax.calculateStampDuty" $ do
     it "monotonically increases" $
       forAll (choose (0.0, 2.0e6)) $ \x ->
         stampDuty x <= stampDuty (x + 10.0)
