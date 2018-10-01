@@ -26,4 +26,4 @@ routeStampDutyRequest request =
         SDLTResponse { givenPropertyValue = p'
                      , stampDutyAmount = TaxAmount' $ calculateStampDuty p
                      }
-    Left err -> badRequest err
+    Left err -> badRequest $ "Error deserializing JSON: " ++ err
