@@ -3,7 +3,9 @@ module PropertyTax
   ) where
 
 import Data.Function ((&))
-import PropertyTax.Types
+import PropertyTax.Types ( HousePrice, mkHousePrice, fromHousePrice
+                         , TaxAmount (..)
+                         )
 
 calculateStampDuty :: HousePrice -> TaxAmount
 calculateStampDuty housePrice =

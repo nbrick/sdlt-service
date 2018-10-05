@@ -1,7 +1,7 @@
 module Logging where
 
 import Prelude hiding (log)
-import Data.Time.Clock
+import Data.Time.Clock (getCurrentTime)
 import Pipes
 
 type Logged = Producer String

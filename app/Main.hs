@@ -1,15 +1,17 @@
 module Main where
 
-import Data.Aeson
+import Data.Aeson (eitherDecode, encode)
 import Data.ByteString.Lazy.Char8 (pack, unpack)
-import Network.HTTP.Server
-import Network.URL
+import Network.HTTP.Server (server, Response, Request (..))
+import Network.URL (URL (..))
 import Network.Socket.Internal (SockAddr)
-import PropertyTax
-import JSONSupport
-import Response
+import PropertyTax (calculateStampDuty)
+import JSONSupport ( SDLTQuery (..), SDLTResponse (..)
+                   , HousePrice' (..), TaxAmount' (..)
+                   )
+import Response (responseWith, notFound, badRequest)
 import Prelude hiding (log)
-import Logging
+import Logging (Logged, log, logToStdOutWithTimestamps)
 
 main :: IO ()
 main = do server handle

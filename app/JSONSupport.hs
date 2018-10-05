@@ -4,7 +4,9 @@ module JSONSupport where
 
 import GHC.Generics
 import Data.Aeson
-import PropertyTax.Types
+import PropertyTax.Types ( HousePrice, mkHousePrice, fromHousePrice
+                         , TaxAmount (..)
+                         )
 
 data SDLTQuery = SDLTQuery
   { propertyValue :: HousePrice'
